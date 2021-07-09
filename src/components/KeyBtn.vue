@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Tone :tone="tone" v-if="showTone"></Tone>
+    <Tone :tone="tone" v-show="showTone"></Tone>
 
     <button
       type="button"
@@ -10,10 +10,10 @@
           ? 'btn sharp-key-btn mt-5 py-3 bg-dark border border-dark'
           : 'btn key-btn mt-5 py-3 bg-white border border-dark'
       "
-      @mousedown="play"
+      @mousedown="playTone"
       @mouseleave="stop"
       @mouseup="stop"
-      @touchstart="play"
+      @touchstart="playTone"
       @touchend="stop"
       @touchcancel="stop"
     ></button>
@@ -30,6 +30,7 @@ import {
   onUpdated,
 } from "vue";
 import Tone from "./Tone";
+
 export default {
   components: {
     Tone,
@@ -52,8 +53,13 @@ export default {
 
     const isActive = ref(false);
 
-    const play = () => {
+    const playTone = () => {
       isActive.value = true;
+      console.log("props.tone", props.tone);
+      var audioElement = new Audio(
+        `/sounds/${props.tone.replace("#", "sharp")}.mp3`
+      );
+      audioElement.play();
     };
     const stop = () => {
       isActive.value = false;
@@ -71,7 +77,7 @@ export default {
       }
     });
 
-    return { isActive, play, stop, showTone, isSharpTone };
+    return { isActive, playTone, stop, showTone, isSharpTone };
   },
 };
 </script>
@@ -86,19 +92,15 @@ export default {
   text-decoration: none;
   display: inline-block;
   font-size: 16px;
-  position: absolute;
 }
 
 .sharp-key-btn {
   height: 105px;
   border-radius: 0;
+  padding: 30px 30px;
   color: #000;
-  padding: 20px 20px;
   text-align: center;
   text-decoration: none;
-  display: inline-block;
   font-size: 16px;
-  position: relative;
-  z-index: 9;
 }
 </style>
